@@ -1,4 +1,6 @@
 import argparse
+import os
+import sys
 from util import isTextFile
 
 parser = argparse.ArgumentParser(
@@ -17,5 +19,22 @@ INPUT_PATH = args.input
 OUTPUT_PATH = args.output
 CHROMA_PATH = args.chroma_db
 
-# Begin vectorization pipeline
-print(isTextFile(INPUT_PATH))
+# Check if input path is a directory
+if os.path.isdir(INPUT_PATH):
+    print("Directory")
+    # go to the directory
+    # loop each file
+    # check is text
+    # pass to the parser
+    # parser will put the vectorization tasks into a queue
+    # while that isn't empty -> vectorize and store the intermediary chunks
+    pass
+elif os.path.isfile(INPUT_PATH):
+    print("File")
+    # pass into parser as a task
+    # parser will put the vectorization tasks into a queue
+    # while that isn't empty -> vectorize and store the intermediary chunks
+    pass
+else:
+    sys.exit(
+        "ERROR: The input path provided does not exist. Please try again and enter a valid path.")
