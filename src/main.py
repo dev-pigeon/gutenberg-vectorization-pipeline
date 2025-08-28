@@ -1,4 +1,5 @@
 import argparse
+from util import isTextFile
 
 parser = argparse.ArgumentParser(
     description="A CLI tool to vectorize text files.")
@@ -17,3 +18,4 @@ OUTPUT_PATH = args.output
 CHROMA_PATH = args.chroma_db
 
 # Begin vectorization pipeline
+print(isTextFile(INPUT_PATH))
