@@ -1,4 +1,5 @@
 import argparse
+from util import isTextFile
 
 parser = argparse.ArgumentParser(
     description="A CLI tool to vectorize text files.")
