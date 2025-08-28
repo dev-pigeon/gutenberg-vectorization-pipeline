@@ -1,4 +1,5 @@
 import argparse
+import os
 from util import isTextFile
 
 parser = argparse.ArgumentParser(
@@ -16,6 +17,22 @@ args = parser.parse_args()
 INPUT_PATH = args.input
 OUTPUT_PATH = args.output
 CHROMA_PATH = args.chroma_db
+
+
+# Check if input path is a directory
+if os.path.isdir(INPUT_PATH):
+    # go to the directory
+    # loop each file
+    # check is text
+    # pass to the parser
+    # parser will put the vectorization tasks into a queue
+    # while that isn't empty -> vectorize and store the intermediary chunks
+    pass
+else:
+    # pass into parser as a task
+    # parser will put the vectorization tasks into a queue
+    # while that isn't empty -> vectorize and store the intermediary chunks
+    pass
 
 # Begin vectorization pipeline
 print(isTextFile(INPUT_PATH))
