@@ -1,2 +1,5 @@
 src/venv/
 src/__pycache__/
+data
+.DS_Store
+run.sh
