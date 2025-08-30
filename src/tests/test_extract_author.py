@@ -1,5 +1,5 @@
 import unittest
-from src.parser import extractAuthor
+from parser import extractAuthor
 
 
 class TestExtractAuthor(unittest.TestCase):
