@@ -35,6 +35,6 @@ class TestExtractAuthor(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_invalid_header(self):
-        expected = "Unkown"
+        expected = "Unknown"
         actual = extractAuthor(self.invalid_header)
         self.assertEqual(actual, expected)

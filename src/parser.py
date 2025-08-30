@@ -7,4 +7,4 @@ def extractAuthor(header: str):
         line_end = header.find("\n", match.end())
         author = header[match.end():line_end].strip()
         return author
-    return ""
+    return "Unknown"
