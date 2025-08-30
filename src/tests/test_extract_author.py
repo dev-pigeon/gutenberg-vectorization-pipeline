@@ -29,8 +29,12 @@ class TestExtractAuthor(unittest.TestCase):
     Credits: Judith Boss. HTML version by Al Haines.
     """
 
-    def test_found_author(self):
+    def test_valud_header(self):
         expected = "Oscar Wilde"
         actual = extractAuthor(self.valid_header)
         self.assertEqual(actual, expected)
-        pass
+
+    def test_invalid_header(self):
+        expected = "Unkown"
+        actual = extractAuthor(self.invalid_header)
+        self.assertEqual(actual, expected)
