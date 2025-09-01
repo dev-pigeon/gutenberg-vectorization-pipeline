@@ -65,3 +65,7 @@ Credits: Produced by Greg Weeks, Mary Meehan and the Online
         actual = self.parser.header
         self.assertMultiLineEqual(self.parser.normalize(
             actual), self.parser.normalize(self.valid_expected.strip()))
+
+    def test_extract_invalid_header(self):
+        with self.assertRaises(ValueError):
+            self.parser.extractHeader("Fake Header")
