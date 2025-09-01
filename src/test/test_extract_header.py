@@ -33,6 +33,27 @@ Credits: Produced by Greg Weeks, Mary Meehan and the Online
 
 
 *** START OF THE PROJECT GUTENBERG EBOOK FRANKENSTEIN; OR, THE MODERN PROMETHEUS ***
+    [Transcriber’s Note: This text was produced from a photo-reprint of the
+    1818 edition.]
+
+
+
+
+                                FRANKENSTEIN;
+
+                                    OR,
+
+                            THE MODERN PROMETHEUS.
+
+
+        IN THREE VOLUMES.
+        VOL. I.
+
+        London:
+
+        _PRINTED FOR_
+        LACKINGTON, HUGHES, HARDING, MAVOR, & JONES,
+        FINSBURY SQUARE.
 """
 
     valid_expected = """The Project Gutenberg eBook of Frankenstein; Or, The Modern Prometheus

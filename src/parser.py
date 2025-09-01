@@ -33,5 +33,12 @@ class Parser:
         else:
             raise ValueError("ERROR: Text header is missing.")
 
+    def extract_body(self, text: str):
+        # header_end_index has either been set or extractHeader raised an error
+        # in the second case, the parser will have moved on to the next file
+        # therefor, header_end_index should always be valid at this point
+        line_end = text.find("\n", self.header_end_index)
+        self.body = text[line_end:].strip()
+
     def normalize(self, s: str) -> str:
         return "\n".join(line.strip() for line in s.splitlines())
