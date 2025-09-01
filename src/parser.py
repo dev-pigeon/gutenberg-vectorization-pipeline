@@ -4,6 +4,7 @@ import regex  # type: ignore
 class Parser:
 
     header = ""
+    header_end_index = -1
     body = None
 
     def __init__(self):
@@ -26,11 +27,18 @@ class Parser:
     def extractHeader(self, text: str):
         match = regex.search(r"\*\*\* START OF THE PROJECT GUTENBERG", text)
         if match:
-            header_end = match.start()
-            self.header = text[:header_end].strip()
+            self.header_end_index = match.start()
+            self.header = text[:self.header_end_index].strip()
 
         else:
             raise ValueError("ERROR: Text header is missing.")
+
+    def extract_body(self, text: str):
+        # header_end_index has either been set or extractHeader raised an error
+        # in the second case, the parser will have moved on to the next file
+        # therefor, header_end_index should always be valid at this point
+        line_end = text.find("\n", self.header_end_index)
+        self.body = text[line_end:].strip()
 
     def normalize(self, s: str) -> str:
         return "\n".join(line.strip() for line in s.splitlines())
