@@ -1,8 +1,10 @@
 import unittest
-from parser import extractAuthor
+from parser import Parser
 
 
 class TestExtractAuthor(unittest.TestCase):
+
+    paser = Parser()
     valid_header = """The Project Gutenberg eBook of The Picture of Dorian Gray
     
     Title: The Picture of Dorian Gray
@@ -31,10 +33,10 @@ class TestExtractAuthor(unittest.TestCase):
 
     def test_valud_header(self):
         expected = "Oscar Wilde"
-        actual = extractAuthor(self.valid_header)
+        actual = self.paser.extractAuthor(self.valid_header)
         self.assertEqual(actual, expected)
 
     def test_invalid_header(self):
         expected = "Unknown"
-        actual = extractAuthor(self.invalid_header)
+        actual = self.paser.extractAuthor(self.invalid_header)
         self.assertEqual(actual, expected)
