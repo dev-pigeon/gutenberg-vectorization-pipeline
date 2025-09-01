@@ -4,6 +4,7 @@ import regex  # type: ignore
 class Parser:
 
     header = ""
+    header_end_index = -1
     body = None
 
     def __init__(self):
@@ -26,8 +27,8 @@ class Parser:
     def extractHeader(self, text: str):
         match = regex.search(r"\*\*\* START OF THE PROJECT GUTENBERG", text)
         if match:
-            header_end = match.start()
-            self.header = text[:header_end].strip()
+            self.header_end_index = match.start()
+            self.header = text[:self.header_end_index].strip()
 
         else:
             raise ValueError("ERROR: Text header is missing.")
