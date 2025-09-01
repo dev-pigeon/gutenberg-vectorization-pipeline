@@ -1,16 +1,21 @@
-import regex
+import regex  # type: ignore
 
 
-def extractAuthor(header: str):
-    match = regex.search(r"Author:", header)
+class Parser:
 
-    if match:
-        author = ""
-        line_end = header.find("\n", match.end())
-        if line_end == -1:
-            author = header[match.end():].strip()
-        else:
-            author = header[match.end():line_end].strip()
-        return author
+    def __init__(self):
+        pass
 
-    return "Unknown"
+    def extractAuthor(self, header: str):
+        match = regex.search(r"Author:", header)
+
+        if match:
+            author = ""
+            line_end = header.find("\n", match.end())
+            if line_end == -1:
+                author = header[match.end():].strip()
+            else:
+                author = header[match.end():line_end].strip()
+            return author
+
+        return "Unknown"
