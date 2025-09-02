@@ -6,6 +6,7 @@ class Parser:
     header = ""
     header_end_index = -1
     body = None
+    release_date = ""
 
     def __init__(self):
         pass
@@ -39,6 +40,15 @@ class Parser:
         # therefor, header_end_index should always be valid at this point
         line_end = text.find("\n", self.header_end_index)
         self.body = text[line_end:].strip()
+
+    def get_release_date(self, header: str):
+        pattern = r"(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}"
+        match = regex.search(pattern, header, regex.IGNORECASE)
+        if match:
+            release_date = match.group()
+            return release_date
+        else:
+            return "Unknown"
 
     def normalize(self, s: str) -> str:
         return "\n".join(line.strip() for line in s.splitlines())
