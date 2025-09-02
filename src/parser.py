@@ -47,7 +47,8 @@ class Parser:
         if match:
             release_date = match.group()
             return release_date
-        return ""
+        else:
+            return "Unknown"
 
     def normalize(self, s: str) -> str:
         return "\n".join(line.strip() for line in s.splitlines())
