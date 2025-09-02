@@ -51,6 +51,18 @@ class Parser:
             return "Unknown"
 
     def get_title(self, header: str):
+        pattern = r"Title:\s?"
+        match = regex.search(pattern, header)
+        if match:
+            end_of_line = header.find("\n", match.start())
+            print(match.group())
+            if end_of_line != -1:
+                title = header[match.end():end_of_line].strip()
+                return title
+            else:
+                title = header[match.end():].strip()
+                return title
+
         return ""
 
     def normalize(self, s: str) -> str:
