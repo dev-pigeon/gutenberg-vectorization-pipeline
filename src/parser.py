@@ -56,7 +56,6 @@ class Parser:
         match = regex.search(pattern, header, regex.IGNORECASE)
         if match:
             end_of_line = header.find("\n", match.start())
-            print(match.group())
             if end_of_line != -1:
                 title = header[match.end():end_of_line].strip()
                 return title
