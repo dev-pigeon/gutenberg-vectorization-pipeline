@@ -52,7 +52,7 @@ class Parser:
 
     def get_title(self, header: str):
         pattern = r"Title:\s?"
-        match = regex.search(pattern, header)
+        match = regex.search(pattern, header, regex.IGNORECASE)
         if match:
             end_of_line = header.find("\n", match.start())
             print(match.group())

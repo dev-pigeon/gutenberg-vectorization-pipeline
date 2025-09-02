@@ -14,3 +14,9 @@ class TestGetTitle(unittest.TestCase):
         actual = self.Parser.get_title(self.valid_title)
         self.assertEqual(expected, actual,
                          f"Expected {expected} but was {actual}")
+
+    def test_insensitivity(self):
+        expected = "Alice's Adventures in Wonderland"
+        actual = self.Parser.get_title(self.case_insenvitive)
+        self.assertEqual(expected, actual,
+                         f"Expected {expected} but was {actual}")
