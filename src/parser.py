@@ -45,7 +45,6 @@ class Parser:
         # therefor, header_end_index should always be valid at this point
         line_end = text.find("\n", self.header_end_index)
         self.body = text[line_end:].strip()
-        self.chunk_text(self.body)
 
     def get_release_date(self, header: str):
         pattern = r"(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}"
@@ -72,7 +71,7 @@ class Parser:
             raise ValueError(
                 "File does not contain valid book title - skipping.")
 
-    def chunk_text(self, body: str, min_tokens=200):
+    def chunk(self, body: str, min_tokens=200):
 
         paragraphs = [para.strip()
                       for para in body.split("\n\n") if para.strip()]
@@ -90,6 +89,7 @@ class Parser:
                 chunks.append(chunk)
                 current_chunk = ""
                 chunk_count += 1
+        return chunks
 
     def normalize(self, s: str) -> str:
         return "\n".join(line.strip() for line in s.splitlines())
