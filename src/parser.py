@@ -43,7 +43,7 @@ class Parser:
 
     def get_release_date(self, header: str):
         pattern = r"(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}"
-        match = regex.search(pattern, header)
+        match = regex.search(pattern, header, regex.IGNORECASE)
         if match:
             release_date = match.group()
             return release_date
