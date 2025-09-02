@@ -7,6 +7,7 @@ class Parser:
     header_end_index = -1
     body = None
     release_date = ""
+    title = ""
 
     def __init__(self):
         pass
@@ -63,7 +64,9 @@ class Parser:
                 title = header[match.end():].strip()
                 return title
 
-        return ""
+        else:
+            raise ValueError(
+                "File does not contain valid book title - skipping.")
 
     def normalize(self, s: str) -> str:
         return "\n".join(line.strip() for line in s.splitlines())
