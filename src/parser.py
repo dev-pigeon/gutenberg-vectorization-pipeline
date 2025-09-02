@@ -1,18 +1,36 @@
 import regex  # type: ignore
 from chunk import Chunk
+from task import ParseTask
 
 
 class Parser:
 
     header = ""
     header_end_index = -1
-    body = None
+    body = ""
     release_date = ""
     title = ""
     author = ""
 
     def __init__(self):
         pass
+
+    def chunk_file(self, task: ParseTask):
+        try:
+            with open(task.input_path, "r") as file:
+                text = file.read()
+                self.header = self.extractHeader(text)
+                self.body = self.extract_body(text)
+                self.title = self.get_title(self.header)
+                self.author = self.extractAuthor(self.header)
+                self.release_date = self.get_release_date(self.header)
+                chunks = self.chunk_text(self.body)
+
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File {task.input_path} does not exist.")
+
+        except ValueError as e:
+            raise ValueError(e)
 
     def extractAuthor(self, header: str):
         match = regex.search(r"Author:", header)
@@ -33,8 +51,8 @@ class Parser:
         match = regex.search(r"\*\*\* START OF THE PROJECT GUTENBERG", text)
         if match:
             self.header_end_index = match.start()
-            self.header = text[:self.header_end_index].strip()
-            self.extract_body(text)
+            header = text[:self.header_end_index].strip()
+            return header
 
         else:
             raise ValueError("ERROR: Text header is missing.")
@@ -44,7 +62,8 @@ class Parser:
         # in the second case, the parser will have moved on to the next file
         # therefor, header_end_index should always be valid at this point
         line_end = text.find("\n", self.header_end_index)
-        self.body = text[line_end:].strip()
+        body = text[line_end:].strip()
+        return body
 
     def get_release_date(self, header: str):
         pattern = r"(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}"
@@ -71,7 +90,7 @@ class Parser:
             raise ValueError(
                 "File does not contain valid book title - skipping.")
 
-    def chunk(self, body: str, min_tokens=200):
+    def chunk_text(self, body: str, min_tokens=200):
 
         paragraphs = [para.strip()
                       for para in body.split("\n\n") if para.strip()]
