@@ -40,5 +40,8 @@ class Parser:
         line_end = text.find("\n", self.header_end_index)
         self.body = text[line_end:].strip()
 
+    def get_release_date(self, header: str):
+        return ""
+
     def normalize(self, s: str) -> str:
         return "\n".join(line.strip() for line in s.splitlines())
