@@ -54,6 +54,7 @@ Credits: Produced by Greg Weeks, Mary Meehan and the Online
         _PRINTED FOR_
         LACKINGTON, HUGHES, HARDING, MAVOR, & JONES,
         FINSBURY SQUARE.
+        
 """
 
     valid_expected = """The Project Gutenberg eBook of Frankenstein; Or, The Modern Prometheus

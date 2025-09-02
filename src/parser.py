@@ -1,4 +1,5 @@
 import regex  # type: ignore
+from chunk import Chunk
 
 
 class Parser:
@@ -8,6 +9,7 @@ class Parser:
     body = None
     release_date = ""
     title = ""
+    author = ""
 
     def __init__(self):
         pass
@@ -27,10 +29,12 @@ class Parser:
         return "Unknown"
 
     def extractHeader(self, text: str):
+        self.extract_body(text)
         match = regex.search(r"\*\*\* START OF THE PROJECT GUTENBERG", text)
         if match:
             self.header_end_index = match.start()
             self.header = text[:self.header_end_index].strip()
+            self.extract_body(text)
 
         else:
             raise ValueError("ERROR: Text header is missing.")
@@ -66,6 +70,26 @@ class Parser:
         else:
             raise ValueError(
                 "File does not contain valid book title - skipping.")
+
+    def chunk(self, body: str, min_tokens=200):
+
+        paragraphs = [para.strip()
+                      for para in body.split("\n\n") if para.strip()]
+        current_chunk = ""
+        chunks = []
+        chunk_count = 0
+
+        for para in paragraphs:
+            current_chunk += para
+
+            if len(current_chunk) >= min_tokens:
+                # make a chunk
+                chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
+                ), release_date=self.release_date, chunk_id=chunk_count)
+                chunks.append(chunk)
+                current_chunk = ""
+                chunk_count += 1
+        return chunks
 
     def normalize(self, s: str) -> str:
         return "\n".join(line.strip() for line in s.splitlines())
