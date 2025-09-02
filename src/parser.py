@@ -50,5 +50,8 @@ class Parser:
         else:
             return "Unknown"
 
+    def get_title(self, header: str):
+        return ""
+
     def normalize(self, s: str) -> str:
         return "\n".join(line.strip() for line in s.splitlines())
