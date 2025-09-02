@@ -22,3 +22,8 @@ Original publication: United Kingdom: Lackington, Hughes, Harding, Mavor, & Jone
         actual = self.parser.get_release_date(self.text)
         self.assertEqual(expected, actual,
                          f"Expected {expected} but was {actual}")
+
+    def test_invalid_release_date(self):
+        with (self.assertRaises(ValueError)):
+            self.parser.get_release_date(
+                "This is a fake header with no release date")
