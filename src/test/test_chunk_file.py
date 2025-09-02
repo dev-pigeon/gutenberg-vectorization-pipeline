@@ -17,3 +17,7 @@ class TestChunkFile(unittest.TestCase):
         self.assertEqual(expected_author, self.parser.author)
         self.assertEqual(expected_title, self.parser.title)
         self.assertEqual(expected_rd, self.parser.release_date)
+
+    def test_file_not_found(self):
+        with self.assertRaises(FileNotFoundError):
+            self.parser.chunk_file(ParseTask("fakepath/file.txt"))
