@@ -18,3 +18,12 @@ class Chunk:
     def from_json(cls, json_str: str):
         data = json.loads(json_str)
         return cls(**data)
+
+    def package_metadata(self):
+        # author, title, release date
+        metadata = {
+            "author": self.author,
+            "title": self.title,
+            "release_date": self.release_date
+        }
+        return metadata
