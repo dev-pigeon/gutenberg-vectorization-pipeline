@@ -3,7 +3,7 @@ import json
 
 class Chunk:
 
-    def __init__(self, title: str, author: str | None, text: str, release_date: str | None, chunk_id: int) -> None:
+    def __init__(self, title: str, author: str | None, text: str, release_date: str | None, chunk_id: str) -> None:
         self.title = title
         self.author = author
         self.text = text
