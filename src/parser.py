@@ -89,7 +89,7 @@ class Parser:
 
         else:
             raise ValueError(
-                "File does not contain valid book title - skipping.")
+                "WARNING: File does not contain valid book title - skipping.")
 
     def chunk_text(self, body: str, min_tokens=200):
 
