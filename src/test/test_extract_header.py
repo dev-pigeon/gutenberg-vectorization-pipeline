@@ -1,10 +1,10 @@
 import unittest
-from parser import Parser
+from chunker import Chunker
 
 
 class TestExtractHeader(unittest.TestCase):
 
-    parser = Parser()
+    chunker = Chunker()
     text = """
         The Project Gutenberg eBook of Frankenstein; Or, The Modern Prometheus
 
@@ -83,10 +83,10 @@ Credits: Produced by Greg Weeks, Mary Meehan and the Online
             Revised by Richard Tonsing."""
 
     def test_extract_valid_header(self):
-        actual = self.parser.extractHeader(self.text)
-        self.assertMultiLineEqual(self.parser.normalize(
-            actual), self.parser.normalize(self.valid_expected.strip()))
+        actual = self.chunker.extractHeader(self.text)
+        self.assertMultiLineEqual(self.chunker.normalize(
+            actual), self.chunker.normalize(self.valid_expected.strip()))
 
     def test_extract_invalid_header(self):
         with self.assertRaises(ValueError):
-            self.parser.extractHeader("Fake Header")
+            self.chunker.extractHeader("Fake Header")

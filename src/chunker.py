@@ -3,7 +3,7 @@ from chunk import Chunk
 from task import ParseTask
 
 
-class Parser:
+class Chunker:
 
     header = ""
     header_end_index = -1

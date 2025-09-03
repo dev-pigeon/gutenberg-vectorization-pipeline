@@ -1,9 +1,9 @@
 import unittest
-from parser import Parser
+from chunker import Chunker
 
 
 class TestGetReleaseDate(unittest.TestCase):
-    parser = Parser()
+    chunker = Chunker()
     text = """
 Title: Frankenstein; Or, The Modern Prometheus
 
@@ -24,18 +24,18 @@ Release date: june 24, 1999 [eBook #41445]
 
     def test_valid_release_date(self):
         expected = "November 23, 2012"
-        actual = self.parser.get_release_date(self.text)
+        actual = self.chunker.get_release_date(self.text)
         self.assertEqual(expected, actual,
                          f"Expected {expected} but was {actual}")
 
     def test_invalid_release_date(self):
         expected = "Unknown"
-        actual = self.parser.get_release_date("This is a fake header")
+        actual = self.chunker.get_release_date("This is a fake header")
         self.assertEqual(expected, actual,
                          f"Expected {expected} but was {actual}")
 
     def test_case_insensitivity(self):
         expected = "june 24, 1999"
-        actual = self.parser.get_release_date(self.case_insensitive)
+        actual = self.chunker.get_release_date(self.case_insensitive)
         self.assertEqual(expected, actual,
                          f"Expected {expected} but was {actual}")
