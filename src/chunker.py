@@ -31,7 +31,7 @@ class Chunker:
             raise FileNotFoundError(f"File {task.input_path} does not exist.")
 
         except ValueError as e:
-            raise ValueError(e)
+            print(e)
 
     def extract_author(self, header: str):
         match = regex.search(r"Author:", header)

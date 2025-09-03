@@ -38,6 +38,9 @@ timer = Timer()
 try:
     if os.path.isdir(INPUT_PATH):
         directory_path = Path(INPUT_PATH)
+        item_count = 0
+        timer.start()
+
         for item in directory_path.iterdir():
             if item.is_file():
                 file_path = item
@@ -46,6 +49,9 @@ try:
                 parseTask = ParseTask(path_str)
                 chunker.chunk_file(parseTask)
                 vectorizer.embed_and_insert_chunks(chunker.chunks)
+                item_count += 1
+        time_elapsed = timer.get_time_elapsed()
+        print(f"Processed {item_count} files in {time_elapsed} seconds")
 
     elif os.path.isfile(INPUT_PATH):
         timer.start()
