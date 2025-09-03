@@ -113,7 +113,7 @@ class Chunker:
             if len(current_chunk) >= min_tokens:
                 # make a chunk
                 chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
-                ), release_date=self.release_date, chunk_id=chunk_count)
+                ), release_date=self.release_date, chunk_id=self.title + "-" + str(chunk_count))
                 chunks.append(chunk)
                 # gets the last seventy five characters as overlap
                 current_chunk = current_chunk[-75:]
@@ -121,7 +121,7 @@ class Chunker:
 
         if len(current_chunk) > 75:
             chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
-            ), release_date=self.release_date, chunk_id=chunk_count)
+            ), release_date=self.release_date, chunk_id=self.title + "-" + str(chunk_count))
             chunks.append(chunk)
 
         return chunks
