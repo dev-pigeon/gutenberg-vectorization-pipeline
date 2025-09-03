@@ -9,6 +9,7 @@ class Chunk:
         self.text = text
         self.release_date = release_date
         self.chunk_id = chunk_id
+        self.embedding = []
 
     def to_json(self):
         return json.dumps(self.__dict__)
