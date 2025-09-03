@@ -13,3 +13,4 @@ class TestInsertChunk(unittest.TestCase):
             "/Users/jackyoungadmin/Documents/Projects/vectorization/text-vectorization-pipeline/data/chromadb")
         collection = ingestor.get_collection("test_collection", client)
         ingestor.insert_chunk(collection, self.chunk)
+        client.delete_collection(name="test_collection")
