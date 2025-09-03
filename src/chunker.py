@@ -118,8 +118,12 @@ class Chunker:
                 # gets the last seventy five characters as overlap
                 current_chunk = current_chunk[-75:]
                 chunk_count += 1
-        for chunk in chunks:
-            print(chunk.to_json())
+
+        if len(current_chunk) > 75:
+            chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
+            ), release_date=self.release_date, chunk_id=chunk_count)
+            chunks.append(chunk)
+
         return chunks
 
     def normalize(self, s: str) -> str:
