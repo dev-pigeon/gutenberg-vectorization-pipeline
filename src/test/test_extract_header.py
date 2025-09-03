@@ -83,10 +83,10 @@ Credits: Produced by Greg Weeks, Mary Meehan and the Online
             Revised by Richard Tonsing."""
 
     def test_extract_valid_header(self):
-        actual = self.chunker.extractHeader(self.text)
+        actual = self.chunker.extract_header(self.text)
         self.assertMultiLineEqual(self.chunker.normalize(
             actual), self.chunker.normalize(self.valid_expected.strip()))
 
     def test_extract_invalid_header(self):
         with self.assertRaises(ValueError):
-            self.chunker.extractHeader("Fake Header")
+            self.chunker.extract_header("Fake Header")

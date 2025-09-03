@@ -20,10 +20,10 @@ class Chunker:
         try:
             with open(task.input_path, "r") as file:
                 text = file.read()
-                self.header = self.extractHeader(text)
+                self.header = self.extract_header(text)
                 self.body = self.extract_body(text)
                 self.title = self.get_title(self.header)
-                self.author = self.extractAuthor(self.header)
+                self.author = self.extract_author(self.header)
                 self.release_date = self.get_release_date(self.header)
                 self.chunks = self.chunk_text(self.body)
 
@@ -33,7 +33,7 @@ class Chunker:
         except ValueError as e:
             raise ValueError(e)
 
-    def extractAuthor(self, header: str):
+    def extract_author(self, header: str):
         match = regex.search(r"Author:", header)
 
         if match:
@@ -47,7 +47,7 @@ class Chunker:
 
         return "Unknown"
 
-    def extractHeader(self, text: str):
+    def extract_header(self, text: str):
         self.extract_body(text)
         match = regex.search(r"\*\*\* START OF THE PROJECT GUTENBERG", text)
         if match:
@@ -59,7 +59,7 @@ class Chunker:
             raise ValueError("ERROR: Text header is missing.")
 
     def extract_body(self, text: str):
-        # header_end_index has either been set or extractHeader raised an error
+        # header_end_index has either been set or extract_header raised an error
         # in the second case, the parser will have moved on to the next file
         # therefor, header_end_index should always be valid at this point
         line_end = text.find("\n", self.header_end_index)
