@@ -14,6 +14,8 @@ parser.add_argument('-i', '--input', required=True,
                     help='The global path to the text file or directory to vectorize.')
 parser.add_argument('--chroma-db', required=True,
                     help='The global path pointing to your local persistent ChromaDB instance or the location where you would like one to be created')
+parser.add_argument('-cn', '--collection-name', required=True,
+                    help='The name of the ChromaDB collection where the records will be stored.')
 
 args = parser.parse_args()
 
