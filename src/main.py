@@ -4,7 +4,7 @@ import sys
 from util import isTextFile
 from task import ParseTask
 from pathlib import Path
-from parser import Parser
+from chunker import Parser
 
 parser = argparse.ArgumentParser(
     description="A CLI tool to vectorize text files.")

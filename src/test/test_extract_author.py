@@ -1,5 +1,5 @@
 import unittest
-from parser import Parser
+from chunker import Parser
 
 
 class TestExtractAuthor(unittest.TestCase):
