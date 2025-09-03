@@ -61,10 +61,18 @@ class Chunker:
     def extract_body(self, text: str):
         # header_end_index has either been set or extract_header raised an error
         # in the second case, the parser will have moved on to the next file
-        # therefor, header_end_index should always be valid at this point
+        # so header_end_index should always be valid at this point
         line_end = text.find("\n", self.header_end_index)
-        body = text[line_end:].strip()
-        return body
+        # body = text[line_end:].strip()
+        end_pattern = r"\*{3}\s*END OF THE PROJECT"
+        match = regex.search(end_pattern, text)
+        if match:
+            file_end = match.start()
+            body = text[line_end:file_end]
+            return body
+        # no end signature detected, get the entire thing
+
+        return text[line_end:]
 
     def get_release_date(self, header: str):
         pattern = r"(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}"
