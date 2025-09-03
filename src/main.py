@@ -5,6 +5,7 @@ from util import isTextFile
 from task import ParseTask
 from pathlib import Path
 from chunker import Chunker
+from vectorizer import Vectorizer
 
 parser = argparse.ArgumentParser(
     description="A CLI tool to vectorize text files.")
@@ -19,6 +20,7 @@ args = parser.parse_args()
 INPUT_PATH = args.input
 CHROMA_PATH = args.chroma_db
 chunker = Chunker()
+vectorizer = Vectorizer()
 
 # Check if input path is a directory
 
@@ -39,7 +41,6 @@ try:
         parseTask = ParseTask(INPUT_PATH)
         chunker.chunk_file(parseTask)
 
-        pass
     else:
         sys.exit(
             "ERROR: The input path provided does not exist. Please try again and enter a valid path.")
