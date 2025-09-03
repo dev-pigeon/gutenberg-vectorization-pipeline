@@ -6,6 +6,7 @@ from task import ParseTask
 from pathlib import Path
 from chunker import Chunker
 from vectorizer import Vectorizer
+from timer import Timer
 
 parser = argparse.ArgumentParser(
     description="A CLI tool to vectorize text files.")
@@ -31,12 +32,11 @@ if not os.path.isdir(CHROMA_PATH):
 chunker = Chunker()
 vectorizer = Vectorizer(chroma_path=CHROMA_PATH,
                         collection_name=COLLECTION_NAME)
-
+timer = Timer()
 
 # Check if input path is a directory
 try:
     if os.path.isdir(INPUT_PATH):
-        print("Directory")
         directory_path = Path(INPUT_PATH)
         for item in directory_path.iterdir():
             if item.is_file():
@@ -48,10 +48,13 @@ try:
                 vectorizer.embed_and_insert_chunks(chunker.chunks)
 
     elif os.path.isfile(INPUT_PATH):
+        timer.start()
         isTextFile(INPUT_PATH)
         parseTask = ParseTask(INPUT_PATH)
         chunker.chunk_file(parseTask)
         vectorizer.embed_and_insert_chunks(chunker.chunks)
+        time_elapsed = timer.get_time_elapsed()
+        print(f"Processed one file in {time_elapsed} seconds.")
 
     else:
         sys.exit(
