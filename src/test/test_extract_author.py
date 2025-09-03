@@ -33,10 +33,10 @@ class TestExtractAuthor(unittest.TestCase):
 
     def test_valud_header(self):
         expected = "Oscar Wilde"
-        actual = self.chunker.extractAuthor(self.valid_header)
+        actual = self.chunker.extract_author(self.valid_header)
         self.assertEqual(actual, expected)
 
     def test_invalid_header(self):
         expected = "Unknown"
-        actual = self.chunker.extractAuthor(self.invalid_header)
+        actual = self.chunker.extract_author(self.invalid_header)
         self.assertEqual(actual, expected)

@@ -23,7 +23,7 @@ class Chunker:
                 self.header = self.extractHeader(text)
                 self.body = self.extract_body(text)
                 self.title = self.get_title(self.header)
-                self.author = self.extractAuthor(self.header)
+                self.author = self.extract_author(self.header)
                 self.release_date = self.get_release_date(self.header)
                 self.chunks = self.chunk_text(self.body)
 
@@ -33,7 +33,7 @@ class Chunker:
         except ValueError as e:
             raise ValueError(e)
 
-    def extractAuthor(self, header: str):
+    def extract_author(self, header: str):
         match = regex.search(r"Author:", header)
 
         if match:
