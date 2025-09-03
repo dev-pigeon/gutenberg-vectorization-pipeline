@@ -45,11 +45,13 @@ try:
                 isTextFile(path_str)
                 parseTask = ParseTask(path_str)
                 chunker.chunk_file(parseTask)
+                vectorizer.embed_and_insert_chunks(chunker.chunks)
 
     elif os.path.isfile(INPUT_PATH):
         isTextFile(INPUT_PATH)
         parseTask = ParseTask(INPUT_PATH)
         chunker.chunk_file(parseTask)
+        vectorizer.embed_and_insert_chunks(chunker.chunks)
 
     else:
         sys.exit(
