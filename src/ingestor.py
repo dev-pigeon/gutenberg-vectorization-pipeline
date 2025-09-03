@@ -24,5 +24,6 @@ def insert_chunk(collection, chunk: Chunk):
 
 
 def get_record(chunk_id: str, collection):
-    record = collection.get(ids=[chunk_id])
+    record = collection.get(ids=[chunk_id], include=[
+                            "embeddings", "metadatas", "documents"])
     return record
