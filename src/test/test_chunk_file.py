@@ -1,11 +1,11 @@
 import unittest
 from task import ParseTask
-from chunker import Parser
+from chunker import Chunker
 
 
 class TestChunkFile(unittest.TestCase):
 
-    parser = Parser()
+    chunker = Chunker()
 
     def test_sets_properties(self):
         task = ParseTask(
@@ -13,11 +13,11 @@ class TestChunkFile(unittest.TestCase):
         expected_author = "Oscar Wilde"
         expected_title = "The Picture of Dorian Gray"
         expected_rd = "October 1, 1994"
-        self.parser.chunk_file(task)
-        self.assertEqual(expected_author, self.parser.author)
-        self.assertEqual(expected_title, self.parser.title)
-        self.assertEqual(expected_rd, self.parser.release_date)
+        self.chunker.chunk_file(task)
+        self.assertEqual(expected_author, self.chunker.author)
+        self.assertEqual(expected_title, self.chunker.title)
+        self.assertEqual(expected_rd, self.chunker.release_date)
 
     def test_file_not_found(self):
         with self.assertRaises(FileNotFoundError):
-            self.parser.chunk_file(ParseTask("fakepath/file.txt"))
+            self.chunker.chunk_file(ParseTask("fakepath/file.txt"))

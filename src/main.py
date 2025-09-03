@@ -4,7 +4,7 @@ import sys
 from util import isTextFile
 from task import ParseTask
 from pathlib import Path
-from chunker import Parser
+from chunker import Chunker
 
 parser = argparse.ArgumentParser(
     description="A CLI tool to vectorize text files.")
@@ -18,7 +18,7 @@ args = parser.parse_args()
 
 INPUT_PATH = args.input
 CHROMA_PATH = args.chroma_db
-parser = Parser()
+chunker = Chunker()
 
 # Check if input path is a directory
 
@@ -32,12 +32,12 @@ try:
                 path_str = str(file_path)
                 isTextFile(path_str)
                 parseTask = ParseTask(path_str)
-                parser.chunk_file(parseTask)
+                chunker.chunk_file(parseTask)
 
     elif os.path.isfile(INPUT_PATH):
         isTextFile(INPUT_PATH)
         parseTask = ParseTask(INPUT_PATH)
-        parser.chunk_file(parseTask)
+        chunker.chunk_file(parseTask)
 
         pass
     else:
