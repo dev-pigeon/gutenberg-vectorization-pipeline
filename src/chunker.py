@@ -99,7 +99,7 @@ class Chunker:
             raise ValueError(
                 "WARNING: File does not contain valid book title - skipping.")
 
-    def chunk_text(self, body: str, min_tokens=200):
+    def chunk_text(self, body: str, min_tokens=250):
 
         paragraphs = [para.strip()
                       for para in body.split("\n\n") if para.strip()]
@@ -115,8 +115,15 @@ class Chunker:
                 chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
                 ), release_date=self.release_date, chunk_id=chunk_count)
                 chunks.append(chunk)
-                current_chunk = ""
+                # gets the last seventy five characters as overlap
+                current_chunk = current_chunk[-75:]
                 chunk_count += 1
+
+        if len(current_chunk) > 75:
+            chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
+            ), release_date=self.release_date, chunk_id=chunk_count)
+            chunks.append(chunk)
+
         return chunks
 
     def normalize(self, s: str) -> str:
