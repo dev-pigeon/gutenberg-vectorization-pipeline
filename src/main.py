@@ -21,12 +21,16 @@ args = parser.parse_args()
 
 INPUT_PATH = args.input
 CHROMA_PATH = args.chroma_db
-chunker = Chunker()
+COLLECTION_NAME = args.collection_name
 
 # ensure that chroma_path is valid
 if not os.path.isdir(CHROMA_PATH):
     sys.exit(
         f"ERROR: The path: {CHROMA_PATH} does not exist or is not a valid directory. Please try again with a valid and existing directory path for ChromaDB")
+
+chunker = Chunker()
+vectorizer = Vectorizer(chroma_path=CHROMA_PATH,
+                        collection_name=COLLECTION_NAME)
 
 
 # Check if input path is a directory
