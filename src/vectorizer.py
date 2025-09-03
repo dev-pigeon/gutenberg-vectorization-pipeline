@@ -12,7 +12,7 @@ class Vectorizer:
 
     def embed_and_insert_chunks(self, chunks):
         for chunk in chunks:
-            print(f"Embedding chunk: {chunk.chunk_id}")
+            # print(f"Embedding chunk: {chunk.chunk_id}")
             self.embed_and_insert_chunk(chunk)
 
     def embed_and_insert_chunk(self, chunk: Chunk):
