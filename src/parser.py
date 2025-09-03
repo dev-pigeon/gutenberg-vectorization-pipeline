@@ -11,6 +11,7 @@ class Parser:
     release_date = ""
     title = ""
     author = ""
+    chunks = []
 
     def __init__(self):
         pass
@@ -24,7 +25,7 @@ class Parser:
                 self.title = self.get_title(self.header)
                 self.author = self.extractAuthor(self.header)
                 self.release_date = self.get_release_date(self.header)
-                chunks = self.chunk_text(self.body)
+                self.chunks = self.chunk_text(self.body)
 
         except FileNotFoundError:
             raise FileNotFoundError(f"File {task.input_path} does not exist.")
