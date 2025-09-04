@@ -1,11 +1,12 @@
 import unittest
 from task import ParseTask
 from chunker import Chunker
+from multiprocessing import Queue
 
 
 class TestChunkFile(unittest.TestCase):
 
-    chunker = Chunker()
+    chunker = Chunker(Queue(), "test-chunker")
 
     def test_sets_properties(self):
         task = ParseTask(
