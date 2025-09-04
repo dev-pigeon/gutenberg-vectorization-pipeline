@@ -1,14 +1,17 @@
 from chunk import Chunk
 from sentence_transformers import SentenceTransformer  # type: ignore
 import ingestor
+from multiprocessing import Process
 
 
-class Vectorizer:
+class Vectorizer(Process):
 
-    def __init__(self, chroma_path, collection_name):
+    def __init__(self, chroma_path, collection_name, queue):
+        super().__init__()
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
         self.collection = ingestor.get_collection(
             collection_name, ingestor.get_chroma_client(chroma_path))
+        self.queue = queue
 
     def embed_and_insert_chunks(self, chunks):
         for chunk in chunks:

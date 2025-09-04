@@ -44,8 +44,9 @@ if __name__ == "__main__":
 
     # initialize variables
     chunking_queue = Queue()
+    vectorizing_queue = Queue()
     vectorizer = Vectorizer(chroma_path=CHROMA_PATH,
-                            collection_name=COLLECTION_NAME)
+                            collection_name=COLLECTION_NAME, queue=vectorizing_queue)
     timer = Timer()
 
     # start chunkers
