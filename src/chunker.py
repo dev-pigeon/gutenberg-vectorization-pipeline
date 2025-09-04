@@ -1,7 +1,7 @@
 import regex  # type: ignore
 from chunk import Chunk
 from task import ParseTask
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 
 
 class Chunker(Process):
@@ -14,7 +14,7 @@ class Chunker(Process):
     author = ""
     chunks = []
 
-    def __init__(self, input_queue, output_queue, id: str):
+    def __init__(self, input_queue: Queue, output_queue: Queue, id: str):
         super().__init__()
         self.input_queue = input_queue
         self.output_queue = output_queue
@@ -129,6 +129,7 @@ class Chunker(Process):
                 chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
                 ), release_date=self.release_date, chunk_id=self.title + "-" + str(chunk_count))
                 chunks.append(chunk)
+                self.output_queue.put(chunk)
                 # print(f"created chunk: {chunk.to_json()}")
                 # gets the last seventy five characters as overlap
                 current_chunk = current_chunk[-75:]
@@ -138,6 +139,7 @@ class Chunker(Process):
             chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
             ), release_date=self.release_date, chunk_id=self.title + "-" + str(chunk_count))
             chunks.append(chunk)
+            self.output_queue.put(chunk)
 
         return chunks
 
