@@ -46,7 +46,7 @@ def start_chunkers(num_chunkers):
 
 def start_vectorizers(num_vectorizers):
     vectorizers = [Vectorizer(id=f"vectorizer-{i}", chroma_path=CHROMA_PATH,
-                              collection_name=COLLECTION_NAME, queue=vectorizing_queue) for i in range(num_vectorizers)]
+                              collection_name=COLLECTION_NAME, input_queue=vectorizing_queue, output_queue=ingesting_queue) for i in range(num_vectorizers)]
     for v in vectorizers:
         v.start()
     return vectorizers
@@ -74,6 +74,7 @@ if __name__ == "__main__":
     # initialize variables
     chunking_queue = Queue()
     vectorizing_queue = Queue()
+    ingesting_queue = Queue()
     timer = Timer()
 
     # start chunkers
