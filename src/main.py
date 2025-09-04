@@ -55,15 +55,15 @@ if __name__ == "__main__":
     timer = Timer()
 
     # start chunkers
-    num_chunkers = 1
+    num_chunkers = 2
     chunkers = [
         Chunker(input_queue=chunking_queue, output_queue=vectorizing_queue, id=f"Chunker-{i}") for i in range(num_chunkers)]
     for chunker in chunkers:
         chunker.start()
 
     # start vectorizers
-    num_vectorizers = 1
-    vectorizers = [Vectorizer(chroma_path=CHROMA_PATH,
+    num_vectorizers = 4
+    vectorizers = [Vectorizer(id=f"vectorizer-{i}", chroma_path=CHROMA_PATH,
                               collection_name=COLLECTION_NAME, queue=vectorizing_queue) for i in range(num_vectorizers)]
     for v in vectorizers:
         v.start()

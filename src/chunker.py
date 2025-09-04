@@ -2,6 +2,7 @@ import regex  # type: ignore
 from chunk import Chunk
 from task import ParseTask
 from multiprocessing import Process, Queue
+import time
 
 
 class Chunker(Process):
@@ -21,13 +22,12 @@ class Chunker(Process):
         self.id = id
 
     def run(self):
-        print("chunker starting")
+        print(f"{self.id} starting", flush=True)
         while True:
             task = self.input_queue.get()
             if task is None:
-                print("chunker ending")
+                print(f"{self.id} ending", flush=True)
                 break
-            print(f"{self.id} working on file {task.input_path}")
             self.chunk_file(task)
 
     def chunk_file(self, task: ParseTask):
