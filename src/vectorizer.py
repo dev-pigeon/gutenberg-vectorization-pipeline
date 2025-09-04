@@ -1,6 +1,5 @@
 from chunk import Chunk
 from sentence_transformers import SentenceTransformer  # type: ignore
-import ingestor
 from multiprocessing import Process
 
 
