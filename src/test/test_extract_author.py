@@ -1,10 +1,11 @@
 import unittest
 from chunker import Chunker
+from multiprocessing import Queue
 
 
 class TestExtractAuthor(unittest.TestCase):
 
-    chunker = Chunker()
+    chunker = Chunker(Queue(), Queue(), "test-chunker")
     valid_header = """The Project Gutenberg eBook of The Picture of Dorian Gray
     
     Title: The Picture of Dorian Gray

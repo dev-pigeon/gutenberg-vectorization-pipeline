@@ -1,9 +1,11 @@
 import regex  # type: ignore
 from chunk import Chunk
 from task import ParseTask
+from multiprocessing import Process, Queue
+import time
 
 
-class Chunker:
+class Chunker(Process):
 
     header = ""
     header_end_index = -1
@@ -13,8 +15,20 @@ class Chunker:
     author = ""
     chunks = []
 
-    def __init__(self):
-        pass
+    def __init__(self, input_queue: Queue, output_queue: Queue, id: str):
+        super().__init__()
+        self.input_queue = input_queue
+        self.output_queue = output_queue
+        self.id = id
+
+    def run(self):
+        print(f"{self.id} starting", flush=True)
+        while True:
+            task = self.input_queue.get()
+            if task is None:
+                print(f"{self.id} ending", flush=True)
+                break
+            self.chunk_file(task)
 
     def chunk_file(self, task: ParseTask):
         try:
@@ -33,7 +47,8 @@ class Chunker:
         except ValueError as e:
             print(e)
 
-    def extract_author(self, header: str):
+    @staticmethod
+    def extract_author(header: str):
         match = regex.search(r"Author:", header)
 
         if match:
@@ -83,7 +98,8 @@ class Chunker:
         else:
             return "Unknown"
 
-    def get_title(self, header: str):
+    @staticmethod
+    def get_title(header: str):
         pattern = r"Title:\s?"
         match = regex.search(pattern, header, regex.IGNORECASE)
         if match:
@@ -115,6 +131,8 @@ class Chunker:
                 chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
                 ), release_date=self.release_date, chunk_id=self.title + "-" + str(chunk_count))
                 chunks.append(chunk)
+                self.output_queue.put(chunk)
+                # print(f"created chunk: {chunk.to_json()}")
                 # gets the last seventy five characters as overlap
                 current_chunk = current_chunk[-75:]
                 chunk_count += 1
@@ -123,6 +141,7 @@ class Chunker:
             chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
             ), release_date=self.release_date, chunk_id=self.title + "-" + str(chunk_count))
             chunks.append(chunk)
+            self.output_queue.put(chunk)
 
         return chunks
 

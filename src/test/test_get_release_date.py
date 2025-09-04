@@ -1,9 +1,10 @@
 import unittest
 from chunker import Chunker
+from multiprocessing import Queue
 
 
 class TestGetReleaseDate(unittest.TestCase):
-    chunker = Chunker()
+    chunker = Chunker(Queue(), Queue(), "test-chunker")
     text = """
 Title: Frankenstein; Or, The Modern Prometheus
 
