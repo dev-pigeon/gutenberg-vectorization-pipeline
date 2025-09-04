@@ -52,7 +52,7 @@ if __name__ == "__main__":
     # start chunkers
     num_chunkers = 3
     chunkers = [
-        Chunker(chunking_queue, id=f"Chunker-{i}") for i in range(num_chunkers)]
+        Chunker(input_queue=chunking_queue, output_queue=vectorizing_queue, id=f"Chunker-{i}") for i in range(num_chunkers)]
     for chunker in chunkers:
         chunker.start()
 

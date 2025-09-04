@@ -14,15 +14,16 @@ class Chunker(Process):
     author = ""
     chunks = []
 
-    def __init__(self, queue, id: str):
+    def __init__(self, input_queue, output_queue, id: str):
         super().__init__()
-        self.queue = queue
+        self.input_queue = input_queue
+        self.output_queue = output_queue
         self.id = id
 
     def run(self):
         print("chunker starting")
         while True:
-            task = self.queue.get()
+            task = self.input_queue.get()
             if task is None:
                 print("chunker ending")
                 break
