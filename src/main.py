@@ -7,7 +7,7 @@ from pathlib import Path
 from chunker import Chunker
 from vectorizer import Vectorizer
 from timer import Timer
-from multiprocessing import Queue, Process
+from multiprocessing import Queue
 
 parser = argparse.ArgumentParser(
     description="A CLI tool to vectorize text files.")
@@ -32,19 +32,28 @@ if not os.path.isdir(CHROMA_PATH):
 
 
 def cleanup():
-    chunking_queue.put(None)
-    chunker.join()
+    # stop chunkers
+    for _ in chunkers:
+        chunking_queue.put(None)
+
+    for c in chunkers:
+        c.join()
 
 
 if __name__ == "__main__":
 
     # initialize variables
     chunking_queue = Queue()
-    chunker = Chunker(chunking_queue)
-    chunker.start()
     vectorizer = Vectorizer(chroma_path=CHROMA_PATH,
                             collection_name=COLLECTION_NAME)
     timer = Timer()
+
+    # start chunkers
+    num_chunkers = 3
+    chunkers = [
+        Chunker(chunking_queue, id=f"Chunker-{i}") for i in range(num_chunkers)]
+    for chunker in chunkers:
+        chunker.start()
 
     # run pipeline
     try:
@@ -59,15 +68,13 @@ if __name__ == "__main__":
                     isTextFile(path_str)
                     parseTask = ParseTask(path_str)
                     chunking_queue.put(parseTask)
-                    # vectorizer.embed_and_insert_chunks(chunker.chunks)
+                    # chunkers put in vector queue and vectorizers handle and end
 
         elif os.path.isfile(INPUT_PATH):
             timer.start()
             isTextFile(INPUT_PATH)
             parseTask = ParseTask(INPUT_PATH)
             chunking_queue.put(parseTask)
-            # print("embedding file chunks...")
-            # vectorizer.embed_and_insert_chunks(chunker.chunks)
 
         else:
             sys.exit(

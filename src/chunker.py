@@ -14,9 +14,10 @@ class Chunker(Process):
     author = ""
     chunks = []
 
-    def __init__(self, queue):
+    def __init__(self, queue, id: str):
         super().__init__()
         self.queue = queue
+        self.id = id
 
     def run(self):
         print("chunker starting")
@@ -25,6 +26,7 @@ class Chunker(Process):
             if task is None:
                 print("chunker ending")
                 break
+            print(f"{self.id} working on file {task.input_path}")
             self.chunk_file(task)
 
     def chunk_file(self, task: ParseTask):
@@ -126,7 +128,7 @@ class Chunker(Process):
                 chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
                 ), release_date=self.release_date, chunk_id=self.title + "-" + str(chunk_count))
                 chunks.append(chunk)
-                print(f"created chunk: {chunk.to_json()}")
+                # print(f"created chunk: {chunk.to_json()}")
                 # gets the last seventy five characters as overlap
                 current_chunk = current_chunk[-75:]
                 chunk_count += 1
