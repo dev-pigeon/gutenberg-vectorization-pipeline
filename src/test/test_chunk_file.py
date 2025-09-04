@@ -6,7 +6,7 @@ from multiprocessing import Queue
 
 class TestChunkFile(unittest.TestCase):
 
-    chunker = Chunker(Queue(), "test-chunker")
+    chunker = Chunker(Queue(), Queue(), "test-chunker")
 
     def test_sets_properties(self):
         task = ParseTask(

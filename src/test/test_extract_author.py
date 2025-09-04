@@ -5,7 +5,7 @@ from multiprocessing import Queue
 
 class TestExtractAuthor(unittest.TestCase):
 
-    chunker = Chunker(Queue(), "test-chunker")
+    chunker = Chunker(Queue(), Queue(), "test-chunker")
     valid_header = """The Project Gutenberg eBook of The Picture of Dorian Gray
     
     Title: The Picture of Dorian Gray

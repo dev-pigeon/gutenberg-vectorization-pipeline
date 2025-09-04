@@ -4,7 +4,7 @@ from multiprocessing import Queue
 
 
 class TestGetTitle(unittest.TestCase):
-    chunker = Chunker(Queue(), "test-chunker")
+    chunker = Chunker(Queue(), Queue(), "test-chunker")
 
     valid_title = "Title: Alice's Adventures in Wonderland"
     case_insenvitive = "title: Alice's Adventures in Wonderland"

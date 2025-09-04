@@ -47,7 +47,8 @@ class Chunker(Process):
         except ValueError as e:
             print(e)
 
-    def extract_author(self, header: str):
+    @staticmethod
+    def extract_author(header: str):
         match = regex.search(r"Author:", header)
 
         if match:
@@ -97,7 +98,8 @@ class Chunker(Process):
         else:
             return "Unknown"
 
-    def get_title(self, header: str):
+    @staticmethod
+    def get_title(header: str):
         pattern = r"Title:\s?"
         match = regex.search(pattern, header, regex.IGNORECASE)
         if match:

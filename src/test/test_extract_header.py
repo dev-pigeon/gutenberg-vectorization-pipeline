@@ -5,7 +5,7 @@ from multiprocessing import Queue
 
 class TestExtractHeader(unittest.TestCase):
 
-    chunker = Chunker(Queue(), "test-chunker")
+    chunker = Chunker(Queue(), Queue(), "test-chunker")
     text = """
         The Project Gutenberg eBook of Frankenstein; Or, The Modern Prometheus
 
