@@ -39,22 +39,29 @@ def cleanup():
     for c in chunkers:
         c.join()
 
+    # do the reverse for vectorizers
+    vectorizing_queue.put(None)
+    vectorizer.join()
+
 
 if __name__ == "__main__":
 
     # initialize variables
     chunking_queue = Queue()
     vectorizing_queue = Queue()
-    vectorizer = Vectorizer(chroma_path=CHROMA_PATH,
-                            collection_name=COLLECTION_NAME, queue=vectorizing_queue)
     timer = Timer()
 
     # start chunkers
-    num_chunkers = 3
+    num_chunkers = 1
     chunkers = [
         Chunker(input_queue=chunking_queue, output_queue=vectorizing_queue, id=f"Chunker-{i}") for i in range(num_chunkers)]
     for chunker in chunkers:
         chunker.start()
+
+    # start vectorizer
+    vectorizer = Vectorizer(chroma_path=CHROMA_PATH,
+                            collection_name=COLLECTION_NAME, queue=vectorizing_queue)
+    vectorizer.start()
 
     # run pipeline
     try:
