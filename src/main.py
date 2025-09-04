@@ -32,6 +32,27 @@ if not os.path.isdir(CHROMA_PATH):
 
 
 def cleanup():
+    stop_chunkers()
+    stop_vectorizers()
+
+
+def start_chunkers(num_chunkers):
+    chunkers = [
+        Chunker(input_queue=chunking_queue, output_queue=vectorizing_queue, id=f"Chunker-{i}") for i in range(num_chunkers)]
+    for chunker in chunkers:
+        chunker.start()
+    return chunkers
+
+
+def start_vectorizers(num_vectorizers):
+    vectorizers = [Vectorizer(id=f"vectorizer-{i}", chroma_path=CHROMA_PATH,
+                              collection_name=COLLECTION_NAME, queue=vectorizing_queue) for i in range(num_vectorizers)]
+    for v in vectorizers:
+        v.start()
+    return vectorizers
+
+
+def stop_chunkers():
     # stop chunkers
     for _ in chunkers:
         chunking_queue.put(None)
@@ -39,7 +60,8 @@ def cleanup():
     for c in chunkers:
         c.join()
 
-    # do the reverse for vectorizers
+
+def stop_vectorizers():
     for _ in vectorizers:
         vectorizing_queue.put(None)
 
@@ -56,17 +78,11 @@ if __name__ == "__main__":
 
     # start chunkers
     num_chunkers = 2
-    chunkers = [
-        Chunker(input_queue=chunking_queue, output_queue=vectorizing_queue, id=f"Chunker-{i}") for i in range(num_chunkers)]
-    for chunker in chunkers:
-        chunker.start()
+    chunkers = start_chunkers(num_chunkers)
 
     # start vectorizers
     num_vectorizers = 4
-    vectorizers = [Vectorizer(id=f"vectorizer-{i}", chroma_path=CHROMA_PATH,
-                              collection_name=COLLECTION_NAME, queue=vectorizing_queue) for i in range(num_vectorizers)]
-    for v in vectorizers:
-        v.start()
+    vectorizers = start_vectorizers(num_vectorizers)
 
     # run pipeline
     try:
