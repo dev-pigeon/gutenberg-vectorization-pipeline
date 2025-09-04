@@ -1,9 +1,10 @@
 import regex  # type: ignore
 from chunk import Chunk
 from task import ParseTask
+from multiprocessing import Process
 
 
-class Chunker:
+class Chunker(Process):
 
     header = ""
     header_end_index = -1
@@ -13,8 +14,18 @@ class Chunker:
     author = ""
     chunks = []
 
-    def __init__(self):
-        pass
+    def __init__(self, queue):
+        super().__init__()
+        self.queue = queue
+
+    def run(self):
+        print("chunker starting")
+        while True:
+            task = self.queue.get()
+            if task is None:
+                print("chunker ending")
+                break
+            self.chunk_file(task)
 
     def chunk_file(self, task: ParseTask):
         try:
@@ -115,6 +126,7 @@ class Chunker:
                 chunk = Chunk(title=self.title, author=self.author, text=current_chunk.strip(
                 ), release_date=self.release_date, chunk_id=self.title + "-" + str(chunk_count))
                 chunks.append(chunk)
+                print(f"created chunk: {chunk.to_json()}")
                 # gets the last seventy five characters as overlap
                 current_chunk = current_chunk[-75:]
                 chunk_count += 1
