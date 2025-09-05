@@ -8,6 +8,7 @@ from chunker import Chunker
 from vectorizer import Vectorizer
 from timer import Timer
 from multiprocessing import Queue
+from ingestor import Ingestor
 
 parser = argparse.ArgumentParser(
     description="A CLI tool to vectorize text files.")
@@ -34,6 +35,7 @@ if not os.path.isdir(CHROMA_PATH):
 def cleanup():
     stop_chunkers()
     stop_vectorizers()
+    stop_ingestor()
 
 
 def start_chunkers(num_chunkers):
@@ -46,10 +48,17 @@ def start_chunkers(num_chunkers):
 
 def start_vectorizers(num_vectorizers):
     vectorizers = [Vectorizer(id=f"vectorizer-{i}", chroma_path=CHROMA_PATH,
-                              collection_name=COLLECTION_NAME, queue=vectorizing_queue) for i in range(num_vectorizers)]
+                              collection_name=COLLECTION_NAME, input_queue=vectorizing_queue, output_queue=ingesting_queue) for i in range(num_vectorizers)]
     for v in vectorizers:
         v.start()
     return vectorizers
+
+
+def start_ingestor():
+    ingestor = Ingestor(collection_name=COLLECTION_NAME,
+                        chroma_path=CHROMA_PATH, input_queue=ingesting_queue, id="Ingestor")
+    ingestor.start()
+    return ingestor
 
 
 def stop_chunkers():
@@ -69,11 +78,17 @@ def stop_vectorizers():
         v.join()
 
 
+def stop_ingestor():
+    ingesting_queue.put(None)
+    ingestor.join()
+
+
 if __name__ == "__main__":
 
     # initialize variables
     chunking_queue = Queue()
     vectorizing_queue = Queue()
+    ingesting_queue = Queue()
     timer = Timer()
 
     # start chunkers
@@ -84,20 +99,24 @@ if __name__ == "__main__":
     num_vectorizers = 4
     vectorizers = start_vectorizers(num_vectorizers)
 
+    # start ingestor
+    ingestor = start_ingestor()
+
     # run pipeline
     try:
         if os.path.isdir(INPUT_PATH):
             directory_path = Path(INPUT_PATH)
             timer.start()
 
-            for item in directory_path.iterdir():
-                if item.is_file():
-                    file_path = item
-                    path_str = str(file_path)
-                    isTextFile(path_str)
-                    parseTask = ParseTask(path_str)
-                    chunking_queue.put(parseTask)
-                    # chunkers put in vector queue and vectorizers handle and end
+            for i in range(5):
+                for item in directory_path.iterdir():
+                    if item.is_file():
+                        file_path = item
+                        path_str = str(file_path)
+                        isTextFile(path_str)
+                        parseTask = ParseTask(path_str)
+                        chunking_queue.put(parseTask)
+                        # chunkers put in vector queue and vectorizers handle and end
 
         elif os.path.isfile(INPUT_PATH):
             timer.start()
