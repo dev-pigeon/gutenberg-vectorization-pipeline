@@ -45,4 +45,5 @@ class Ingestor(Process):
             chunk = self.input_queue.get()
             if chunk is None:
                 break
+           # print(f"{self.id} ingesting chunk {chunk.chunk_id}")
             self.insert_chunk(collection, chunk)

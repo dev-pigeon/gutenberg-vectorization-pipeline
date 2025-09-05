@@ -18,6 +18,7 @@ class Vectorizer(Process):
         raw_embedding = raw_embedding.astype('float32')
         embedding_list = raw_embedding.tolist()
         chunk.embedding = embedding_list
+        self.output_queue.put(chunk)
         # put into output_queue
 
     def run(self):
