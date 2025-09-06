@@ -64,7 +64,8 @@ class Chunker(Process):
 
     def extract_header(self, text: str):
         self.extract_body(text)
-        match = regex.search(r"\*\*\* START OF THE PROJECT GUTENBERG", text)
+        match = regex.search(
+            r"\*\*\* START OF (THE|THIS) PROJECT GUTENBERG", text)
         if match:
             self.header_end_index = match.start()
             header = text[:self.header_end_index].strip()

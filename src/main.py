@@ -19,12 +19,14 @@ parser.add_argument('--chroma-db', required=True,
                     help='The global path pointing to your local persistent ChromaDB instance or the location where you would like one to be created')
 parser.add_argument('-cn', '--collection-name', required=True,
                     help='The name of the ChromaDB collection where the records will be stored.')
+parser.add_argument('-n', '--num-files')
 
 args = parser.parse_args()
 
 INPUT_PATH = args.input
 CHROMA_PATH = args.chroma_db
 COLLECTION_NAME = args.collection_name
+NUM_FILES = int(args.num_files) if args.num_files is not None else 100
 
 # ensure that chroma_path is valid
 if not os.path.isdir(CHROMA_PATH):
@@ -108,15 +110,16 @@ if __name__ == "__main__":
             directory_path = Path(INPUT_PATH)
             timer.start()
 
-            for i in range(5):
-                for item in directory_path.iterdir():
-                    if item.is_file():
-                        file_path = item
-                        path_str = str(file_path)
-                        isTextFile(path_str)
-                        parseTask = ParseTask(path_str)
-                        chunking_queue.put(parseTask)
-                        # chunkers put in vector queue and vectorizers handle and end
+            for i, item in enumerate(directory_path.iterdir()):
+                if i >= NUM_FILES:
+                    break
+                if item.is_file():
+                    file_path = item
+                    path_str = str(file_path)
+                    isTextFile(path_str)
+                    parseTask = ParseTask(path_str)
+                    chunking_queue.put(parseTask)
+                    # chunkers put in vector queue and vectorizers handle and end
 
         elif os.path.isfile(INPUT_PATH):
             timer.start()

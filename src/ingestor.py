@@ -75,6 +75,7 @@ class Ingestor(Process):
         while True:
             chunk = self.input_queue.get()
             if chunk is None:
-                self.flush_buffer(collection)
+                if (len(self.buffer) > 0):
+                    self.flush_buffer(collection)
                 break
             self.process_chunk(chunk, collection)
