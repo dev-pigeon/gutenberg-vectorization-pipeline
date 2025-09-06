@@ -98,7 +98,7 @@ if __name__ == "__main__":
     chunkers = start_chunkers(num_chunkers)
 
     # start vectorizers
-    num_vectorizers = 5
+    num_vectorizers = 4
     vectorizers = start_vectorizers(num_vectorizers)
 
     # start ingestor
