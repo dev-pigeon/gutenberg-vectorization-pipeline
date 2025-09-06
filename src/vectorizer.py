@@ -25,11 +25,9 @@ class Vectorizer(Process):
         # init model here to avoid pickle error
         model = SentenceTransformer("all-MiniLM-L6-v2")
 
-        print(f"{self.id} starting", flush=True)
         while True:
             task = self.input_queue.get()
             if task is None:
-                print(f"{self.id} ending", flush=True)
                 break
             self.embed_and_insert_chunk(
                 model=model, chunk=task)

@@ -107,7 +107,6 @@ if __name__ == "__main__":
     try:
         if os.path.isdir(INPUT_PATH):
             directory_path = Path(INPUT_PATH)
-            timer.start()
 
             for i, item in enumerate(directory_path.iterdir()):
                 if i >= NUM_FILES:
@@ -120,7 +119,6 @@ if __name__ == "__main__":
                     chunking_queue.put(parseTask)
 
         elif os.path.isfile(INPUT_PATH):
-            timer.start()
             isTextFile(INPUT_PATH)
             parseTask = ParseTask(INPUT_PATH)
             chunking_queue.put(parseTask)
@@ -133,5 +131,3 @@ if __name__ == "__main__":
 
     # cleanup
     cleanup()
-    time_elapsed = timer.get_time_elapsed()
-    print(f"Finished processing in {time_elapsed}")
