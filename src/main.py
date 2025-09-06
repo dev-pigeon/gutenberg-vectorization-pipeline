@@ -21,6 +21,7 @@ parser.add_argument('-cn', '--collection-name', required=True,
                     help='The name of the ChromaDB collection where the records will be stored.')
 parser.add_argument('-n', '--num-files')
 
+
 args = parser.parse_args()
 
 INPUT_PATH = args.input

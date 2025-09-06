@@ -10,3 +10,6 @@ class Timer:
 
     def get_time_elapsed(self):
         return time.time() - self.start_time
+
+    def reset(self):
+        self.start_time = 0
