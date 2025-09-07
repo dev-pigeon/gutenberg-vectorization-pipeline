@@ -8,8 +8,8 @@ import time
 class Benchmarker:
     def __init__(self) -> None:
         # [(chunker, vectorizer)]
-        self.worker_counts = [(2, 4)]
-        self.file_counts = [1, 5, 10, 20, 50, 100]
+        self.worker_counts = [(1, 1), (2, 4), (3, 3), (4, 4)]
+        self.file_counts = [1, 5, 10, 20, 50]
         self.output = {}
         self.timer = Timer()
         self.BOOKS_DIRECTORY = "../data/books"
