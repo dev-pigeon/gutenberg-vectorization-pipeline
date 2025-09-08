@@ -40,32 +40,15 @@ class Ingestor(Process):
             self.flush_buffer(index)
 
     def flush_buffer(self, index):
-        parameters = self.get_parameters()  # REFACTOR
-        self.batch_insert(index, parameters)
+        vectors = self.get_vectors()
+        self.batch_insert(index, vectors)
         self.buffer = []
 
-    def get_parameters(self):
-        # REFACTOR TO PACKAGE VECTORS
-        # should return list of json objects
-        # each objevt has id, values (the embedding) and the text
-        ids = []
-        metas = []
-        docs = []
-        embeds = []
+    def get_vectors(self):
+        vectors = []
         for chunk in self.buffer:
-            ids.append(chunk.chunk_id)
-            docs.append(chunk.text)
-            metas.append(chunk.package_metadata())
-            embeds.append(chunk.embedding)
-
-        parameters = {
-            "ids": ids,
-            "documents": docs,
-            "metadatas": metas,
-            "embeddings": embeds
-        }
-
-        return parameters
+            vectors.append(chunk.package_chunk())
+        return vectors
 
     def run(self):
         # get resources
