@@ -22,13 +22,12 @@ class Chunker(Process):
         self.id = id
 
     def run(self):
-        print(f"{self.id} starting", flush=True)
         while True:
             task = self.input_queue.get()
             if task is None:
-                print(f"{self.id} ending", flush=True)
                 break
             self.chunk_file(task)
+            time.sleep(.05)
 
     def chunk_file(self, task: ParseTask):
         try:

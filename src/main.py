@@ -20,6 +20,9 @@ parser.add_argument('--chroma-db', required=True,
 parser.add_argument('-cn', '--collection-name', required=True,
                     help='The name of the ChromaDB collection where the records will be stored.')
 parser.add_argument('-n', '--num-files')
+parser.add_argument('--chunkers')
+parser.add_argument('--vectorizers')
+
 
 args = parser.parse_args()
 
@@ -27,6 +30,8 @@ INPUT_PATH = args.input
 CHROMA_PATH = args.chroma_db
 COLLECTION_NAME = args.collection_name
 NUM_FILES = int(args.num_files) if args.num_files is not None else 100
+NUM_CHUNKERS = int(args.chunkers) if args.chunkers is not None else 2
+NUM_VECTORIZERS = int(args.vectorizers) if args.vectorizers is not None else 4
 
 # ensure that chroma_path is valid
 if not os.path.isdir(CHROMA_PATH):
@@ -40,17 +45,17 @@ def cleanup():
     stop_ingestor()
 
 
-def start_chunkers(num_chunkers):
+def start_chunkers():
     chunkers = [
-        Chunker(input_queue=chunking_queue, output_queue=vectorizing_queue, id=f"Chunker-{i}") for i in range(num_chunkers)]
+        Chunker(input_queue=chunking_queue, output_queue=vectorizing_queue, id=f"Chunker-{i}") for i in range(NUM_CHUNKERS)]
     for chunker in chunkers:
         chunker.start()
     return chunkers
 
 
-def start_vectorizers(num_vectorizers):
+def start_vectorizers():
     vectorizers = [Vectorizer(id=f"vectorizer-{i}", chroma_path=CHROMA_PATH,
-                              collection_name=COLLECTION_NAME, input_queue=vectorizing_queue, output_queue=ingesting_queue) for i in range(num_vectorizers)]
+                              collection_name=COLLECTION_NAME, input_queue=vectorizing_queue, output_queue=ingesting_queue) for i in range(NUM_CHUNKERS)]
     for v in vectorizers:
         v.start()
     return vectorizers
@@ -87,28 +92,21 @@ def stop_ingestor():
 
 if __name__ == "__main__":
 
-    # initialize variables
+    timer = Timer()
+    # initialize queue
     chunking_queue = Queue()
     vectorizing_queue = Queue()
     ingesting_queue = Queue()
-    timer = Timer()
 
-    # start chunkers
-    num_chunkers = 2
-    chunkers = start_chunkers(num_chunkers)
-
-    # start vectorizers
-    num_vectorizers = 4
-    vectorizers = start_vectorizers(num_vectorizers)
-
-    # start ingestor
+    # start workers
+    chunkers = start_chunkers()
+    vectorizers = start_vectorizers()
     ingestor = start_ingestor()
 
     # run pipeline
     try:
         if os.path.isdir(INPUT_PATH):
             directory_path = Path(INPUT_PATH)
-            timer.start()
 
             for i, item in enumerate(directory_path.iterdir()):
                 if i >= NUM_FILES:
@@ -119,10 +117,8 @@ if __name__ == "__main__":
                     isTextFile(path_str)
                     parseTask = ParseTask(path_str)
                     chunking_queue.put(parseTask)
-                    # chunkers put in vector queue and vectorizers handle and end
 
         elif os.path.isfile(INPUT_PATH):
-            timer.start()
             isTextFile(INPUT_PATH)
             parseTask = ParseTask(INPUT_PATH)
             chunking_queue.put(parseTask)
@@ -135,5 +131,3 @@ if __name__ == "__main__":
 
     # cleanup
     cleanup()
-    time_elapsed = timer.get_time_elapsed()
-    print(f"Finished processing in {time_elapsed}")
