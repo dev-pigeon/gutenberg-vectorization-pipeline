@@ -4,3 +4,4 @@ src/test/__pycache__
 data
 .DS_Store
 run.sh
+src/.env

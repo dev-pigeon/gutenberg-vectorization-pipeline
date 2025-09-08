@@ -1,16 +1,18 @@
 import chromadb  # type: ignore
 from chunk import Chunk
 from multiprocessing import Process, Queue
+from pinecone import Pinecone, ServerlessSpec  # type: ignore
+from dotenv import load_dotenv  # type: ignore
+import os
 
 
 class Ingestor(Process):
 
-    def __init__(self, collection_name: str, chroma_path: str, input_queue: Queue, id: str):
+    def __init__(self, pinecone_index: str, input_queue: Queue, id: str):
         super().__init__()
         self.buffer = []
         self.MAX_BUFFER_SIZE = 500  # chunks
-        self.collection_name = collection_name
-        self.chroma_path = chroma_path
+        self.pinecone_index = pinecone_index
         self.input_queue = input_queue
         self.id = id
 
@@ -23,30 +25,29 @@ class Ingestor(Process):
         collection = client.get_or_create_collection(name=collection_name)
         return collection
 
-    def batch_insert(self, collection, parameters):
-        collection.add(
-            ids=parameters['ids'],
-            documents=parameters['documents'],
-            metadatas=parameters['metadatas'],
-            embeddings=parameters['embeddings']
-        )
+    def batch_insert(self, index, parameters):
+        # IMPLEMENT
+        pass
 
     def get_record(self, chunk_id: str, collection):
         record = collection.get(ids=[chunk_id], include=[
                                 "embeddings", "metadatas", "documents"])
         return record
 
-    def process_chunk(self, chunk, collection):
+    def process_chunk(self, chunk, index):
         self.buffer.append(chunk)
         if len(self.buffer) > self.MAX_BUFFER_SIZE:
-            self.flush_buffer(collection)
+            self.flush_buffer(index)
 
-    def flush_buffer(self, collection):
-        parameters = self.get_parameters()
-        self.batch_insert(collection, parameters)
+    def flush_buffer(self, index):
+        parameters = self.get_parameters()  # REFACTOR
+        self.batch_insert(index, parameters)
         self.buffer = []
 
     def get_parameters(self):
+        # REFACTOR TO PACKAGE VECTORS
+        # should return list of json objects
+        # each objevt has id, values (the embedding) and the text
         ids = []
         metas = []
         docs = []
@@ -68,14 +69,37 @@ class Ingestor(Process):
 
     def run(self):
         # get resources
-        client = self.get_chroma_client(self.chroma_path)
-        collection = self.get_collection(self.collection_name, client)
+        print("intializing pinecone connection")
+        load_dotenv()
+        api_key = os.getenv("PINECONE_API_KEY")
+        print(api_key)
 
-        # process chunks as they arrive
+        pinecone = Pinecone(api_key=api_key)
+        if not pinecone.has_index(self.pinecone_index):
+            pinecone.create_index(
+                name=self.pinecone_index,
+                dimension=384,
+                metric='cosine',
+                spec=ServerlessSpec(
+                    cloud="aws",
+                    region="us-east-1"
+                )
+            )
+
+        index = pinecone.Index(self.pinecone_index)
+        stats = index.describe_index_stats()
+        print(stats)
+
         while True:
             chunk = self.input_queue.get()
             if chunk is None:
                 if (len(self.buffer) > 0):
-                    self.flush_buffer(collection)
+                    pass  # flush
                 break
-            self.process_chunk(chunk, collection)
+            pass  # process
+
+
+if __name__ == "__main__":
+    ingestor = Ingestor(pinecone_index="my-first-index",
+                        input_queue=Queue(), id="test")
+    ingestor.run()
