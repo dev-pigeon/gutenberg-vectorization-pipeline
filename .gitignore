@@ -5,3 +5,4 @@ data
 .DS_Store
 run.sh
 src/.env
+src/clean_pinecone.py
