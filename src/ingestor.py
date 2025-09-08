@@ -1,4 +1,3 @@
-import chromadb  # type: ignore
 from chunk import Chunk
 from multiprocessing import Process, Queue
 from pinecone import Pinecone, ServerlessSpec  # type: ignore
@@ -16,23 +15,9 @@ class Ingestor(Process):
         self.input_queue = input_queue
         self.id = id
 
-    def get_chroma_client(self, client_path: str):
-        # valid chroma path is enforced by main
-        chroma_client = chromadb.PersistentClient(path=client_path)
-        return chroma_client
-
-    def get_collection(self, collection_name: str, client):
-        collection = client.get_or_create_collection(name=collection_name)
-        return collection
-
-    def batch_insert(self, index, parameters):
-        # IMPLEMENT
-        pass
-
-    def get_record(self, chunk_id: str, collection):
-        record = collection.get(ids=[chunk_id], include=[
-                                "embeddings", "metadatas", "documents"])
-        return record
+    def batch_insert(self, index, vectors):
+        print(f"{self.id} inserting vectors...")
+        index.upsert(vectors)
 
     def process_chunk(self, chunk, index):
         self.buffer.append(chunk)
@@ -55,7 +40,6 @@ class Ingestor(Process):
         print("intializing pinecone connection")
         load_dotenv()
         api_key = os.getenv("PINECONE_API_KEY")
-        print(api_key)
 
         pinecone = Pinecone(api_key=api_key)
         if not pinecone.has_index(self.pinecone_index):
@@ -70,16 +54,14 @@ class Ingestor(Process):
             )
 
         index = pinecone.Index(self.pinecone_index)
-        stats = index.describe_index_stats()
-        print(stats)
 
         while True:
             chunk = self.input_queue.get()
             if chunk is None:
                 if (len(self.buffer) > 0):
-                    pass  # flush
+                    self.flush_buffer(index)
                 break
-            pass  # process
+            self.process_chunk(chunk, index)
 
 
 if __name__ == "__main__":

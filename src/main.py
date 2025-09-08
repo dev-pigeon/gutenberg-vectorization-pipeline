@@ -62,8 +62,8 @@ def start_vectorizers():
 
 
 def start_ingestor():
-    ingestor = Ingestor(collection_name=COLLECTION_NAME,
-                        chroma_path=CHROMA_PATH, input_queue=ingesting_queue, id="Ingestor")
+    ingestor = Ingestor(pinecone_index="my-first-index",
+                        input_queue=ingesting_queue, id="Ingestor")
     ingestor.start()
     return ingestor
 

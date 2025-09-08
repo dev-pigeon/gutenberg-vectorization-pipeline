@@ -35,4 +35,4 @@ class Chunk:
             "values": self.embedding,
             "metadata": self.package_metadata()
         }
-        pass
+        return packaged_chunk
