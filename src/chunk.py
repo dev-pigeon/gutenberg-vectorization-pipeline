@@ -24,6 +24,15 @@ class Chunk:
         metadata = {
             "author": self.author,
             "title": self.title,
-            "release_date": self.release_date
+            "release_date": self.release_date,
+            "text": self.text
         }
         return metadata
+
+    def package_chunk(self):
+        packaged_chunk = {
+            "id": self.chunk_id,
+            "values": self.embedding,
+            "metadata": self.package_metadata()
+        }
+        pass
