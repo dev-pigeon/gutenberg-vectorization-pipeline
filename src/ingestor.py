@@ -1,19 +1,40 @@
-from chunk import Chunk
-from multiprocessing import Process, Queue
 from pinecone import Pinecone, ServerlessSpec  # type: ignore
 from dotenv import load_dotenv  # type: ignore
 import os
 
 
-class Ingestor(Process):
+class Ingestor():
 
-    def __init__(self, pinecone_index: str, input_queue: Queue, id: str):
-        super().__init__()
+    def __init__(self, id: str):
         self.buffer = []
         self.MAX_BUFFER_SIZE = 500  # chunks
-        self.pinecone_index = pinecone_index
-        self.input_queue = input_queue
         self.id = id
+        self.api_key = os.getenv("PINECONE_API_KEY")
+
+    def get_pinecone_instance(self, api_key):
+        print(f"{self.id} creating pinecone instance")
+        pinecone = Pinecone(api_key=api_key)
+        return pinecone
+
+    def get_pinecone_api_key(self):
+        load_dotenv()
+        api_key = os.getenv("PINECONE_API_KEY")
+        return api_key
+
+    def get_pinecone_index(self, pinecone, index_name):
+        if not pinecone.has_index(index_name):
+            pinecone.create_index(
+                name=index_name,
+                dimension=384,
+                metric='cosine',
+                spec=ServerlessSpec(
+                    cloud="aws",
+                    region="us-east-1"
+                )
+            )
+
+        index = pinecone.Index(index_name)
+        return index
 
     def batch_insert(self, index, vectors):
         print(f"{self.id} inserting vectors...")
@@ -34,37 +55,3 @@ class Ingestor(Process):
         for chunk in self.buffer:
             vectors.append(chunk.package_chunk())
         return vectors
-
-    def run(self):
-        # get resources
-        print("intializing pinecone connection")
-        load_dotenv()
-        api_key = os.getenv("PINECONE_API_KEY")
-
-        pinecone = Pinecone(api_key=api_key)
-        if not pinecone.has_index(self.pinecone_index):
-            pinecone.create_index(
-                name=self.pinecone_index,
-                dimension=384,
-                metric='cosine',
-                spec=ServerlessSpec(
-                    cloud="aws",
-                    region="us-east-1"
-                )
-            )
-
-        index = pinecone.Index(self.pinecone_index)
-
-        while True:
-            chunk = self.input_queue.get()
-            if chunk is None:
-                if (len(self.buffer) > 0):
-                    self.flush_buffer(index)
-                break
-            self.process_chunk(chunk, index)
-
-
-if __name__ == "__main__":
-    ingestor = Ingestor(pinecone_index="my-first-index",
-                        input_queue=Queue(), id="test")
-    ingestor.run()

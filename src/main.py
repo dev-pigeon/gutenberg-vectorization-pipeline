@@ -8,7 +8,6 @@ from chunker import Chunker
 from vectorizer import Vectorizer
 from timer import Timer
 from multiprocessing import Queue
-from ingestor import Ingestor
 
 parser = argparse.ArgumentParser(
     description="A CLI tool to vectorize text files.")
@@ -42,7 +41,6 @@ if not os.path.isdir(CHROMA_PATH):
 def cleanup():
     stop_chunkers()
     stop_vectorizers()
-    stop_ingestor()
 
 
 def start_chunkers():
@@ -54,18 +52,11 @@ def start_chunkers():
 
 
 def start_vectorizers():
-    vectorizers = [Vectorizer(id=f"vectorizer-{i}", chroma_path=CHROMA_PATH,
-                              collection_name=COLLECTION_NAME, input_queue=vectorizing_queue, output_queue=ingesting_queue) for i in range(NUM_CHUNKERS)]
+    vectorizers = [Vectorizer(id=f"vectorizer-{i}", pinecone_index_name="my-first-index",
+                              input_queue=vectorizing_queue) for i in range(NUM_CHUNKERS)]
     for v in vectorizers:
         v.start()
     return vectorizers
-
-
-def start_ingestor():
-    ingestor = Ingestor(pinecone_index="my-first-index",
-                        input_queue=ingesting_queue, id="Ingestor")
-    ingestor.start()
-    return ingestor
 
 
 def stop_chunkers():
@@ -85,23 +76,16 @@ def stop_vectorizers():
         v.join()
 
 
-def stop_ingestor():
-    ingesting_queue.put(None)
-    ingestor.join()
-
-
 if __name__ == "__main__":
 
     timer = Timer()
-    # initialize queue
+    # initialize queues
     chunking_queue = Queue()
     vectorizing_queue = Queue()
-    ingesting_queue = Queue()
 
     # start workers
     chunkers = start_chunkers()
     vectorizers = start_vectorizers()
-    ingestor = start_ingestor()
 
     # run pipeline
     try:
