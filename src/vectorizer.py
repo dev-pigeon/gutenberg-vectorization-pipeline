@@ -33,7 +33,6 @@ class Vectorizer(Process):
             if task is None:
                 if (len(ingestor.buffer) > 0):
                     ingestor.flush_buffer(index)
-                print(index.describe_index_stats())
                 break
             embedded_chunk = self.embed_chunk(
                 model=model, chunk=task)
