@@ -47,6 +47,8 @@ flowchart LR
     D -.-> F["Pinecone (alt branch)"]
 ```
 
+<br>
+
 ## Takeaways & Insights 💡
 
 1. Gained hands-on experience multi-threading in Python / battling the GIL.
@@ -54,3 +56,14 @@ flowchart LR
 3. Experienced first-hand how Amdahl's law applies to large scale text processing.
 4. PineconeDB is a fantastic option for a truly distributed process, however the overhead from the network IO outweights the benefit from parralel inserts on one machine.
 5. Benchmarking runs (at varying process counts and backends) reinforced the importance of aligning pipeline design with hardware constraints — embedding generation is computationally expensive, and thermal throttling on consumer hardware limited scaling beyond a certain point.
+
+<br>
+
+## Quicklinks
+
+- [Pipeline Initialization](src/main.py)
+- [Chunkers](src/chunker.py)
+- [Vectorizers](src/vectorizer.py)
+- [Ingestor](src/ingestor.py)
+- [Pinecone (alt branch)](https://github.com/dev-pigeon/text-vectorization-pipeline/tree/pinecone)
+
