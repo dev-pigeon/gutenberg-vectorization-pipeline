@@ -33,7 +33,7 @@ class Benchmarker:
             plt.ylabel("Runtime (seconds)")
             plt.title(f"Runtime Distribution for Worker Pair {worker_pair}")
             print(f"Saving Plot for worker pair {worker_pair}")
-            save_path = "../data/output/chroma/" + \
+            save_path = "../data/output/pinecone/" + \
                 str(worker_pair) + "plot.png"
             plt.savefig(save_path, dpi=300, bbox_inches="tight")
 
@@ -53,14 +53,15 @@ class Benchmarker:
                                 "--chroma-db", self.CRHOMA_DIRECTORY, "-cn", self.COLLECTION_NAME, '-n', str(
                                     num_files),
                                 "--chunkers", str(num_chunkers), "--vectorizers", str(num_vectorizers)])
-                print("********************")
                 runtime = self.timer.get_time_elapsed()
                 self.update_output(
                     pair, runtime - self.TIMER_OVERHEAD, num_files)
                 self.timer.reset()
-                # helps prevent me poor laptop from overheating
-                print("Resting...")
-                time.sleep(5)
+
+                # clean pinecone to prevent going over free tier storage
+                print("Execution finished - cleaning pinecone instance...")
+                subprocess.run(["python3", "clean_pinecone.py"])
+                print("********************")
 
     def initialize_output(self):
         for pair in self.worker_counts:
@@ -69,6 +70,7 @@ class Benchmarker:
 
     def update_output(self, pair, runtime, num_files):
         times = self.output[pair]
+        print(f"finished in {runtime} seconds")
         times.append((runtime, num_files))
         self.output[pair] = times
 
