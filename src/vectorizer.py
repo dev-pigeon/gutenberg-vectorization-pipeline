@@ -1,11 +1,11 @@
 from chunk import Chunk
 from sentence_transformers import SentenceTransformer  # type: ignore
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 
 
 class Vectorizer(Process):
 
-    def __init__(self, chroma_path, collection_name, input_queue, output_queue, id):
+    def __init__(self, chroma_path: str, collection_name: str, input_queue: Queue, output_queue: Queue, id: str):
         super().__init__()
         self.chroma_path = chroma_path
         self.collection_name = collection_name
