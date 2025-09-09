@@ -6,7 +6,6 @@ from task import ParseTask
 from pathlib import Path
 from chunker import Chunker
 from vectorizer import Vectorizer
-from timer import Timer
 from multiprocessing import Queue
 from ingestor import Ingestor
 
@@ -91,8 +90,6 @@ def stop_ingestor():
 
 
 if __name__ == "__main__":
-
-    timer = Timer()
     # initialize queue
     chunking_queue = Queue()
     vectorizing_queue = Queue()

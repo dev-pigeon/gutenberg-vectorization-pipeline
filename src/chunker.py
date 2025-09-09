@@ -132,7 +132,6 @@ class Chunker(Process):
                 ), release_date=self.release_date, chunk_id=self.title + "-" + str(chunk_count))
                 chunks.append(chunk)
                 self.output_queue.put(chunk)
-                # print(f"created chunk: {chunk.to_json()}")
                 # gets the last seventy five characters as overlap
                 current_chunk = current_chunk[-75:]
                 chunk_count += 1
