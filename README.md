@@ -4,7 +4,7 @@
 
 I built this pipeline in response to my growing curiosity surrounding semantic embedding and retrieval augmentented generation. This project targets this interest by processing, chunking, vectorizing, and storing previously downloaded text files from the [Gutenberg Project](https://www.gutenberg.org/).
 
-The system us implemented as a **multi-stage asynchronous pipeline** in Python using a producer-consumer architecture. Workers are disitruted processes via Pythons `multiprocessing` library, enabling efficient processing of large corpora.
+The system is implemented as a **multi-stage asynchronous pipeline** in Python using a producer-consumer architecture. Workers are disitruted processes via Pythons `multiprocessing` library, enabling efficient processing of large corpora.
 
 While this is not a "product" per se, it was a fun and digestible project that provided me with experience scaling text processing and semantinc embedding generation.
 
